@@ -20,6 +20,12 @@ class MacroTests(unittest.TestCase):
         got = m.parse(self.sample, "2026-11-06T00:00:00+00:00")
         self.assertEqual(got["observations"][-1], {"period": "2026-02", "value": 4.1})
 
+    def test_missing_value_is_skipped_and_reported(self):
+        self.sample["Results"]["series"][0]["data"].append({"year": "2026", "period": "M03", "value": "-"})
+        payload = m.parse(self.sample, "2026-11-06")
+        self.assertEqual(payload["missing_periods"], ["2026-03"])
+        self.assertEqual(len(payload["observations"]), 2)
+
     def test_invalid_is_not_published(self):
         with tempfile.TemporaryDirectory() as d:
             folder = Path(d)

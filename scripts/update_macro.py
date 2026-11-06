@@ -24,12 +24,18 @@ def parse(data, timestamp):
     if len(series) != 1 or series[0].get("seriesID") != SERIES:
         raise ValueError("Unexpected BLS series ID")
     observed = {}
+    missing_periods = []
     for row in series[0].get("data", []):
         month = str(row.get("period", ""))
         if month not in {f"M{i:02d}" for i in range(1, 13)}:
             continue
         period = f"{int(row['year']):04d}-{int(month[1:]):02d}"
-        value = float(row["value"])
+        raw_value = str(row.get("value", "")).strip()
+        if raw_value in ("", "-", "."):
+            # Explicit missing/suppressed BLS value; do not turn into a number.
+            missing_periods.append(period)
+            continue
+        value = float(raw_value)
         if not math.isfinite(value) or not (0 <= value <= 100):
             raise ValueError("Invalid unemployment rate for " + period)
         if period in observed:
@@ -43,6 +49,7 @@ def parse(data, timestamp):
         "series": SERIES,
         "indicator": "US unemployment rate, seasonally adjusted",
         "fetched_at": timestamp,
+        "missing_periods": sorted(missing_periods),
         "observations": [observed[k] for k in sorted(observed)],
     }
 
@@ -71,6 +78,7 @@ def collect(out_dir=ROOT / "data", fetcher=None):
         status["bls_update"] = "success"
         status["bls_last_observation"] = payload["observations"][-1]["period"]
         status["bls_observations"] = len(payload["observations"])
+        status["bls_missing_periods"] = payload["missing_periods"]
     except Exception as exc:
         # The previous verified snapshot is intentionally preserved, never fabricated.
         status["notes"].append("BLS fetch failed; last successful snapshot preserved if present: " + str(exc)[:350])
