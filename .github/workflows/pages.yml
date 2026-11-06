@@ -1,43 +1,62 @@
-name: Market Correction Lab · Tests and Pages
+name: Market Correction Lab - Test, refresh data and publish
 on:
   push:
     branches: [main]
   workflow_dispatch:
   schedule:
     - cron: '17 23 * * 1-5'
+
 permissions:
-  contents: read
+  contents: write
   pages: write
   id-token: write
+
 concurrency:
-  group: pages
-  cancel-in-progress: true
+  group: market-correction-pages
+  cancel-in-progress: false
+
 jobs:
-  test-build-deploy:
+  test-update-deploy:
     runs-on: ubuntu-latest
     environment:
       name: github-pages
-      url: ${{ steps.deploy.outputs.page_url }}
+      url: ${{ steps.deployment.outputs.page_url }}
     steps:
       - uses: actions/checkout@v4
+        with:
+          persist-credentials: true
       - uses: actions/setup-python@v5
         with:
           python-version: '3.12'
       - uses: actions/setup-node@v4
         with:
           node-version: '22'
-      - name: Test Python
+      - name: Unit tests (Python)
         run: python -m unittest discover -s tests -p 'test_*.py' -v
-      - name: Test calculation engine
+      - name: Unit tests (JavaScript)
         run: node --test tests/*.test.cjs
-      - name: Build and fetch permitted public macro data
-        run: python scripts/build_site.py --out dist --fetch-bls
-      - name: Configure GitHub Pages
-        uses: actions/configure-pages@v5
-      - name: Upload static site
-        uses: actions/upload-pages-artifact@v4
+      - name: Fetch BLS public monthly macro series
+        continue-on-error: true
+        run: python scripts/update_macro.py
+      - name: Commit public data snapshot for durable cloud storage
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add -A data
+          if ! git diff --cached --quiet; then
+            git commit -m "data: update BLS public macro snapshot [skip ci]"
+            git push origin HEAD:main
+          fi
+      - name: Build public site
+        run: |
+          python scripts/build_site.py --out dist
+          if test -f data/macro.json; then cp data/macro.json dist/data/macro.json; fi
+          cp data/status.json dist/data/status.json
+          touch dist/.nojekyll
+      - uses: actions/configure-pages@v5
+      - uses: actions/upload-pages-artifact@v4
         with:
           path: dist
-      - name: Deploy
-        id: deploy
+      - name: Deploy GitHub Pages
+        id: deployment
         uses: actions/deploy-pages@v4
