@@ -1,0 +1,8 @@
+{
+  "built_at": "2026-11-06T12:22:19+00:00",
+  "market_data": "not_published",
+  "bls_update": "failed",
+  "notes": [
+    "BLS fetch failed; last successful snapshot preserved if present: could not convert string to float: '-'"
+  ]
+}
