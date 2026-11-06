@@ -1,6 +1,6 @@
 # Market Correction Lab — MVP 0.1
 
-**Status: local MVP built and tests passed; GitHub Pages is not yet published.**
+**Status: pierwsza demonstracyjna wersja działa na GitHub Pages. Kod Python, testy i proces BLS są dodane; automatyczne publikacje wymagają ustawienia Pages Source na GitHub Actions.**
 
 Standalone Polish-language, mobile-responsive, no-framework market-correction research dashboard. Independent of GoldBot and TSCC. The initial series on first launch is **DETERMINISTIC SYNTHETIC DATA** and is prominently marked as such. There is no API key in the frontend, no hidden external script and no trading functionality.
 
@@ -14,11 +14,11 @@ Standalone Polish-language, mobile-responsive, no-framework market-correction re
 - Import supplementary `VIX`, `AAII` and `Put/Call` CSV files. AAII requires `published_at`, not the earlier `week_ending` value, to avoid look-ahead.
 - Display the **single officially verified AAII sentiment reading** for the week ending November 4, 2026 (34.1% bullish, 17.5% neutral, 48.4% bearish). It is **not** mistaken for a complete AAII time series and is not automatically used in historical signals.
 - Run `python scripts/build_site.py --out dist` to assemble a static site and status; optionally fetch the **US unemployment rate** from public BLS API v1 using `--fetch-bls`.
-- GitHub Actions configuration runs tests, builds and deploys via GitHub Pages on pushes, manual dispatch, or weekday schedule. First deployment requires manual repository creation/Pages setup.
+- GitHub Actions uruchamia testy, aktualizuje publiczny snapshot BLS i publikuje stronę. Przed pierwszym wdrożeniem z pipeline zmień Pages → Source na **GitHub Actions**. Harmonogram w dni robocze 23:17 UTC.
 
 ## What does not work yet (do not mistake it for live features)
 
-- **No public GitHub Pages URL** until a repository is created and Pages enabled. This environment can read your connected GitHub identity but its connector cannot create a repository.
+- **Strona demo działa** pod https://bagosz79.github.io/market-correction-lab/. Automatyczny data pipeline musi być najpierw pomyślnie wdrożony z GitHub Actions.
 - **No live Nasdaq / S&P 500 / Dow Jones prices in the published default build**. The app initially shows synthetic data; real analysis requires CSV import or a separately authorized feed.
 - No automatic AAII scraping, no full AAII 1987+ history, no public FinancialJuice feed and no verified reverse-engineering of the proprietary WiśniewskiFX "Kapitulacja" formula.
 - No backtest edge, probabilities of a reversal, intraday volume profile or automatic buy/sell signals.
@@ -132,3 +132,10 @@ This opt-in is for a later license-approved build, not a recommendation to chang
 3. Expand official public AAII observations *only within allowed use*, log publication date, build provenance record with hashes and update timestamps.
 4. Implement event-study / walk-forward analysis for research signals with no look-ahead, stable indicator revisions and point-in-time data.
 5. Optionally move licensed private histories to Cloudflare R2 with access control, not a public R2 bucket. No TSCC/GoldBot integration in MVP.
+
+## Next deployment step
+
+1. Open Settings → Pages and change Source from `Deploy from a branch` to `GitHub Actions`.
+2. Go to Actions → `Market Correction Lab - Test, refresh data and publish` and run it manually if necessary.
+3. Confirm a successful deployment and check `data/status.json` for BLS source health; it may show `failed` or `stale` if the free BLS endpoint was unavailable.
+4. The dashboard still shows **synthetic** price data unless you import a lawful price CSV. BLS is monthly macro context, not a live index feed or capitulation signal.
