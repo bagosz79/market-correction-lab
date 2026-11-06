@@ -1,0 +1,55 @@
+<!doctype html>
+<html lang="pl">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="color-scheme" content="dark">
+  <meta name="description" content="Market Correction Lab — analiza spadków indeksów i sygnałów potencjalnej kapitulacji">
+  <title>Market Correction Lab · Research Terminal</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+<div class="layout">
+  <aside class="sidebar">
+    <div class="logo"><div class="logo-mark"><span></span><span></span><span></span></div><div><div class="logo-title">MARKET<span>LAB</span></div><div class="logo-subtitle">CORRECTION RESEARCH</div></div></div>
+    <div class="nav-label">WORKSPACE</div>
+    <nav aria-label="Nawigacja">
+      <button class="navitem active" data-tab="overview"><span class="navicon">▥</span><span>Przegląd rynku</span></button>
+      <button class="navitem" data-tab="capitulation"><span class="navicon">◎</span><span>Kapitulacja</span></button>
+      <button class="navitem" data-tab="data"><span class="navicon">▤</span><span>Źródła danych</span></button>
+    </nav>
+    <div class="sidebar-bottom"><div class="system-status"><span class="status-dot"></span>Silnik analityczny aktywny</div><p>Otwarty model obliczeń<br>Brak prognoz i rekomendacji</p><div class="version">MCL / RESEARCH BUILD 0.1</div></div>
+  </aside>
+  <main class="main">
+    <header class="topbar"><div class="breadcrumb">MARKET CORRECTION LAB <span>/</span> <span id="sectionName">PRZEGLĄD</span></div><div class="top-right"><span id="buildDate" class="time-label">BUILD: —</span><span class="avatar">MCL</span></div></header>
+    <div class="content">
+      <div id="statusBanner" class="banner demo"><strong>TRYB DEMONSTRACYJNY</strong><span>Przykładowe ceny są syntetyczne. Nie są notowaniami giełdowymi ani wynikami rzeczywistego backtestu.</span></div>
+      <div class="page-head"><div><div class="eyebrow">INDEPENDENT MARKET INTELLIGENCE</div><h1 id="pageHeading">Analiza korekt rynkowych<span>.</span></h1><p id="pageSubtitle">Odkrywaj historyczne spadki, ich głębokość, czas trwania i powroty do szczytów.</p></div><div class="head-actions"><button class="btn secondary" id="loadDemo">↶ Reset demo</button><button class="btn primary" id="uploadMarket">＋ Importuj ceny CSV</button><input type="file" accept=".csv,text/csv,.txt" id="marketFile" hidden></div></div>
+      <section id="overview" class="page visible" aria-label="Przegląd">
+        <div class="market-header"><div><span class="pill purple" id="symbolLabel">DEMO / INDEX</span> <span id="sourceLabel" class="meta">Dane syntetyczne</span></div><div class="small-meta" id="marketRange">—</div></div>
+        <div class="kpi-grid">
+          <article class="kpi"><div class="kpi-title">Ostatnie zamknięcie <span>◈</span></div><div class="kpi-val" id="kpiClose">—</div><div class="kpi-foot">Cena / punkty</div></article>
+          <article class="kpi"><div class="kpi-title">Bieżący drawdown <span>↘</span></div><div class="kpi-val" id="kpiDrawdown">—</div><div class="kpi-foot" id="peakCaption">Od lokalnego rekordu zamknięcia</div></article>
+          <article class="kpi"><div class="kpi-title">Najgłębszy spadek <span>↓</span></div><div class="kpi-val" id="kpiMax">—</div><div class="kpi-foot">W dostarczonej historii</div></article>
+          <article class="kpi"><div class="kpi-title">Epizody ≥ 10% <span>◷</span></div><div class="kpi-val" id="kpiCount">—</div><div class="kpi-foot">W dostępnej historii</div></article>
+        </div>
+        <div class="panel chart-panel"><div class="panel-head"><div><div class="label-muted">PRICE ANALYSIS</div><h2>Historia notowań <small id="lastDate">—</small></h2></div><div class="segmented" id="periodButtons"><button data-period="6M">6M</button><button data-period="1Y">1Y</button><button data-period="3Y">3Y</button><button class="selected" data-period="ALL">MAX</button></div></div><div id="priceChart" class="chart" role="img" aria-label="Wykres zamknięć indeksu"></div><div class="chart-foot"><span><i class="legend-dot blue"></i> Cena zamknięcia</span><span id="chartHover">Najedź na wykres, aby zobaczyć wartość</span></div></div>
+        <div class="bottom-grid"><section class="panel"><div class="panel-head"><div><div class="label-muted">DRAWDOWN MONITOR</div><h2>Spadek od szczytu (%)</h2></div></div><div id="ddChart" class="chart small-chart" role="img" aria-label="Wykres drawdown"></div><div class="chart-foot">Szczyt liczony ze wszystkich wcześniejszych zamknięć w załadowanej serii.</div></section><section class="panel sentiment-panel"><div class="panel-head"><div><div class="label-muted">PUBLIC SENTIMENT</div><h2>AAII — nastroje</h2></div><span class="pill outline">Oficjalny odczyt</span></div><div class="sentiment-bars"><div class="sentiment-line"><span>Byki</span><div class="bar-track"><div style="width:34.1%;background:#43d6a0"></div></div><strong>34,1%</strong></div><div class="sentiment-line"><span>Neutralni</span><div class="bar-track"><div style="width:17.5%;background:#7c91b0"></div></div><strong>17,5%</strong></div><div class="sentiment-line"><span>Niedźwiedzie</span><div class="bar-track"><div style="width:48.4%;background:#f5877b"></div></div><strong>48,4%</strong></div></div><div class="sentiment-footer"><div><div class="label-muted">BULL–BEAR SPREAD</div><strong class="negative">−14,3 pp</strong></div><div class="muted tiny">Tydzień do 04.11.2026<br>Publikacja 05.11.2026</div></div><p class="source-note">Publiczny punkt obserwacyjny, nie pełna historia. <a href="https://www.aaii.com/sentimentsurvey" target="_blank" rel="noopener noreferrer">Źródło: AAII ↗</a></p></section></div>
+        <section class="panel episodes-panel"><div class="panel-head"><div><div class="label-muted">HISTORICAL EPISODES</div><h2>Wykryte korekty i cofnięcia</h2></div><div class="meta" id="episodeTotal">—</div></div><div class="table-wrap"><table><thead><tr><th>SZCZYT</th><th>DNO</th><th>GŁĘBOKOŚĆ</th><th>TYP</th><th>SPADEK (SESJE)</th><th>ODZYSKANIE SZCZYTU</th></tr></thead><tbody id="episodesBody"></tbody></table></div></section>
+      </section>
+      <section id="capitulation" class="page" aria-label="Kapitulacja">
+        <div class="two-col"><section class="panel cap-intro"><div class="label-muted">CAPITULATION RESEARCH</div><h2>Matryca sygnałów</h2><p>Wskaźniki pokazują, czy występują warunki, które <em>mogą</em> towarzyszyć wyprzedaży. Żaden zestaw nie potwierdza dna rynku.</p><div class="cap-score"><span id="signalCount">—</span><div><strong>Aktywne sygnały</strong><small id="signalAvailable">Nie wszystkie źródła dostępne</small></div></div><div class="cap-warning">⚠ Progi są robocze, bez kalibracji historycznej. Brakujące sygnały nie są traktowane jako fałszywe. Wynik nie oznacza prawdopodobieństwa odbicia.</div></section><section class="panel"><div class="label-muted">METHODOLOGY</div><h2>Zasady obliczeń</h2><div class="rule"><b>RSI 14</b><span>Wilder, z cen zamknięcia</span></div><div class="rule"><b>Drawdown</b><span>Od najwyższego wcześniejszego zamknięcia</span></div><div class="rule"><b>RVOL 20</b><span>Wolumen dziś / średnia 20 wcześniejszych sesji</span></div><div class="rule"><b>AAII</b><span>Wyłącznie dane znane w dniu publikacji</span></div><div class="rule"><b>Odczyty VIX / PCR</b><span>Ostatnia dostępna wartość (maks. 4 dni)</span></div></section></div>
+        <section class="panel signals-panel"><div class="panel-head"><div><div class="label-muted">SIX SIGNAL FRAMEWORK</div><h2>Ocena sześciu warunków</h2></div><span id="analysisAsOf" class="meta">—</span></div><div id="signalRows" class="signals"></div></section>
+      </section>
+      <section id="data" class="page" aria-label="Źródła danych">
+        <section class="panel"><div class="label-muted">DATA GOVERNANCE</div><h2>Źródła i ich status</h2><p class="muted">Ceny i wolumen importujemy z plików, do których masz prawo dostępu. Aplikacja nie pobiera i nie udostępnia automatycznie prawnie chronionych historii indeksów.</p><div class="source-list"><div class="source-row"><div><b>Indeks / ceny zamknięcia</b><small>CSV: Date,Close,Volume (Volume opcjonalny)</small></div><span id="marketState" class="source-state">DEMO</span></div><div class="source-row"><div><b>VIX</b><small>CSV: Date,VIX · przykład: 2026-11-04,19.2</small></div><button id="vixBtn" class="btn tertiary">Importuj CSV</button><input hidden type="file" accept=".csv" id="vixFile"></div><div class="source-row"><div><b>AAII</b><small>CSV: published_at,bullish,neutral,bearish · wymagana faktyczna data publikacji</small></div><button id="aaiiBtn" class="btn tertiary">Importuj CSV</button><input hidden type="file" accept=".csv" id="aaiiFile"></div><div class="source-row"><div><b>Put / Call</b><small>CSV: Date,ratio</small></div><button id="pcrBtn" class="btn tertiary">Importuj CSV</button><input hidden type="file" accept=".csv" id="pcrFile"></div><div class="source-row"><div><b>BLS — stopa bezrobocia USA</b><small>Publiczne API, odświeżane przez GitHub Actions, jeśli dostępne</small></div><span id="blsState" class="source-state">BRAK DANYCH</span></div></div></section>
+        <section class="panel data-help"><div class="label-muted">DATA PROVENANCE</div><h2>Jak działają importy?</h2><p>Wczytane CSV są analizowane <b>wyłącznie w Twojej przeglądarce</b>, bez wysyłania na serwer. Import nie jest zapisywany w GitHubie ani w chmurze. Aby dane były widoczne publicznie i odświeżane, trzeba dodać uprawnione źródło do pipeline'u.</p><p>Daty muszą mieć format <code>YYYY-MM-DD</code>. Duplikaty i niepoprawne ceny są odrzucane. Braki VIX, AAII i Put/Call są jawnie sygnalizowane. Nie stosujemy look-ahead.</p><div class="sample-code">Date,Close,Volume<br>2026-11-02,24120.50,520300<br>2026-11-03,23980.10,608200<br>2026-11-04,23560.00,701050</div><p class="muted tiny">Powyższe trzy wartości to przykład formatu CSV, nie rzeczywiste notowania.</p><div id="macroBox" class="macro-box">BLS: brak pobranego odczytu. Aktualizacja zależy od dostępności API.</div></section>
+      </section>
+      <footer class="footer"><span>MARKET CORRECTION LAB · INDEPENDENT RESEARCH PROJECT</span><span>Bez rekomendacji inwestycyjnych · Źródła: <a href="https://www.aaii.com/sentimentsurvey" target="_blank" rel="noopener noreferrer">AAII</a> · <a href="https://www.bls.gov/developers/" target="_blank" rel="noopener noreferrer">BLS</a> · <a href="https://fred.stlouisfed.org/legal/" target="_blank" rel="noopener noreferrer">FRED / prawa danych</a></span></footer>
+    </div>
+  </main>
+</div>
+<div id="toast" class="toast" role="status" aria-live="polite"></div>
+<script src="engine.js"></script>
+<script src="app.js"></script>
+</body></html>

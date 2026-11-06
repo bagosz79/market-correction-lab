@@ -1,0 +1,1 @@
+This folder is deliberately empty. Never commit proprietary index data or user secrets to a public repository. A legally authorized CSV can be supplied to build_site.py using --market-csv (MCL_PUBLISH_MARKET_DATA=YES required).
