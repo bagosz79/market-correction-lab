@@ -3,7 +3,7 @@
   "source_url": "https://api.bls.gov/publicAPI/v1/timeseries/data/LNS14000000",
   "series": "LNS14000000",
   "indicator": "US unemployment rate, seasonally adjusted",
-  "fetched_at": "2026-11-10T04:37:21+00:00",
+  "fetched_at": "2026-11-11T02:46:24+00:00",
   "missing_periods": [
     "2025-10"
   ],
